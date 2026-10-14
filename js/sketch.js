@@ -1,124 +1,93 @@
-// Flicker settings
-const fastestFrames = 1;  // frames per color at the top of the screen
-const slowestFrames = 5; // frames per color at the bottom of the screen
+// Swarm settings
+const dotsPerMegapixel = 120; // how many dots for every 1000x1000 pixels of screen
+const dotSize = 1.2;            // diameter of each dot (pixels)
+const dotAlpha = 125;          // dot opacity (0 = invisible, 255 = solid)
+const maxSpeed = 0.9;         // fastest a dot can move (pixels per frame)
+const noiseScale = 0.0015;    // how smooth the swarm's paths are (smaller = smoother)
+const noiseDrift = 0.0008;    // how fast the flow pattern changes over time
+const mouseRadius = 120;      // dots within this distance drift away from the mouse
+const mousePush = 0.05;       // how strongly the mouse pushes dots away
 
-// Sound settings
-const sineTop = 15000;    // sine pitch at the top of the screen (Hz)
-const sineBottom = 60;    // sine pitch at the bottom of the screen (Hz)
-const highpassTop = 15000; // high-pass cutoff at the top (Hz)
-const highpassMiddle = 20; // high-pass cutoff just above the middle (Hz)
-const lowpassMiddle = 20000; // low-pass cutoff just below the middle (Hz)
-const lowpassBottom = 60;  // low-pass cutoff at the bottom (Hz)
-const gateTime = 0.002;   // attack/release of each flash (seconds)
-const masterLevel = 0.5;  // overall volume (0-1)
+const backgroundColor = 255;  // page background (white)
+const dotColor = 0;          // dot color (near black)
 
-let isLight = false; // which of the two colors is showing
-let framesHeld = 0;  // how many frames the current color has been shown
-let randomColor;     // new random color picked on every flash
-
-// Tone.js nodes, created on the first click
-let audioStarted = false;
-let noise, filter, sine, crossFade, gate;
+let dots = [];
+let speedFactor = 1; // lowered in setup() for reduced-motion visitors
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  randomColor = color(random(255), random(255), random(255));
+  noStroke();
+
+  // Visitors who asked their system for less motion get a slower swarm
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    speedFactor = 0.3;
+  }
+
+  createDots();
 }
 
 
 function draw() {
-  // X axis: 0 at the center of the screen, 1 at the left/right edges
-  const distFromCenter = constrain(abs(mouseX - width / 2) / (width / 2), 0, 1);
-  // center = red, halfway out = random colors, edges = white
-  let lightColor;
-  let whiteness = 0; // 0 = not white at all, 1 = pure white
-  if (distFromCenter < 0.5) {
-    lightColor = lerpColor(color(255, 0, 0), randomColor, distFromCenter / 0.5);
-  } else {
-    whiteness = (distFromCenter - 0.5) / 0.5;
-    lightColor = lerpColor(randomColor, color(255), whiteness);
+  background(backgroundColor);
+  fill(dotColor, dotAlpha);
+
+  for (const dot of dots) {
+    dot.update();
+    dot.show();
   }
-  const darkColor = color(0);
+}
 
-  // Y axis: top = fewest frames per color (fast), bottom = most (slow)
-  const framesPerColor = round(map(mouseY, 0, height, fastestFrames, slowestFrames, true));
 
-  framesHeld++;
-  if (framesHeld >= framesPerColor) {
-    isLight = !isLight;
-    framesHeld = 0;
-    if (isLight) {
-      randomColor = color(random(255), random(255), random(255));
+class Dot {
+  constructor() {
+    this.position = createVector(random(width), random(height));
+    this.velocity = createVector(0, 0);
+  }
+
+  update() {
+    // Perlin noise gives each spot on the screen a direction that changes slowly,
+    // so neighbouring dots move together like a loose swarm
+    const angle = noise(this.position.x * noiseScale, this.position.y * noiseScale, frameCount * noiseDrift) * TWO_PI * 2;
+    const steer = p5.Vector.fromAngle(angle).mult(0.02);
+    this.velocity.add(steer);
+
+    // Drift away from the mouse
+    const away = p5.Vector.sub(this.position, createVector(mouseX, mouseY));
+    const distance = away.mag();
+    if (distance < mouseRadius && distance > 0) {
+      away.setMag(mousePush * (1 - distance / mouseRadius));
+      this.velocity.add(away);
     }
+
+    this.velocity.limit(maxSpeed * speedFactor);
+    this.position.add(this.velocity);
+    this.wrapAround();
   }
 
-  background(isLight ? lightColor : darkColor);
+  // Dots leaving one edge come back on the opposite edge
+  wrapAround() {
+    if (this.position.x < -dotSize) this.position.x = width + dotSize;
+    if (this.position.x > width + dotSize) this.position.x = -dotSize;
+    if (this.position.y < -dotSize) this.position.y = height + dotSize;
+    if (this.position.y > height + dotSize) this.position.y = -dotSize;
+  }
 
-  if (audioStarted) {
-    updateSound(distFromCenter, whiteness);
-  } else {
-    fill(128);
-    noStroke();
-    textAlign(CENTER, CENTER);
-    textSize(24);
-    text('click to start sound', width / 2, height / 2);
+  show() {
+    circle(this.position.x, this.position.y, dotSize);
   }
 }
 
 
-// Browsers only allow audio to start after the user clicks
-async function mousePressed() {
-  if (audioStarted) return;
-  await Tone.start();
-
-  // noise -> filter --\
-  //                    crossFade -> gate -> master -> speakers
-  // sine -------------/
-  const master = new Tone.Gain(masterLevel).toDestination();
-  gate = new Tone.Gain(0).connect(master);
-  crossFade = new Tone.CrossFade(0).connect(gate);
-  filter = new Tone.Filter({ type: 'highpass', frequency: highpassTop, rolloff: -24 }).connect(crossFade.a);
-  noise = new Tone.Noise('white').connect(filter).start();
-  sine = new Tone.Oscillator(sineTop, 'sine').connect(crossFade.b).start();
-
-  audioStarted = true;
+// Adds or removes dots so the count matches the screen size,
+// keeping the ones already moving so a resize doesn't make the swarm jump
+function createDots() {
+  const count = round((width * height) / 1000000 * dotsPerMegapixel);
+  while (dots.length < count) dots.push(new Dot());
+  dots.length = count;
 }
 
-
-function updateSound(distFromCenter, whiteness) {
-  const now = Tone.now();
-
-  // Y axis: 0 at the top, 1 at the bottom
-  const y = constrain(mouseY / height, 0, 1);
-
-  // Sine pitch: high at the top, low at the bottom
-  sine.frequency.rampTo(expMap(y, sineTop, sineBottom), 0.03, now);
-
-  // Noise filter: high-pass in the top half, low-pass in the bottom half
-  if (y < 0.5) {
-    filter.type = 'highpass';
-    filter.frequency.rampTo(expMap(y / 0.5, highpassTop, highpassMiddle), 0.03, now);
-  } else {
-    filter.type = 'lowpass';
-    filter.frequency.rampTo(expMap((y - 0.5) / 0.5, lowpassMiddle, lowpassBottom), 0.03, now);
-  }
-
-  // X axis: edges = filtered noise, center = sine
-  crossFade.fade.rampTo(1 - distFromCenter, 0.03, now);
-
-  // Gate: black/color = sound, white = silence
-  const level = isLight ? 1 - whiteness : 1;
-  gate.gain.rampTo(level, gateTime, now);
-}
-
-
-// Maps t (0-1) from a to b on an exponential curve, so pitch changes evenly to the ear
-function expMap(t, a, b) {
-  return a * pow(b / a, t);
-}
-
-    
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+  createDots();
 }

@@ -2,6 +2,374 @@
 GENERAL SETUP
 ====================*/
 
-body{
-    margin:0; 
+
+@import url('https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Syne:wght@400..800&display=swap');
+
+/* Para testar a dupla 3 (Archivo larga), troque no @import acima
+       Archivo:ital,wght@0,100..900;1,100..900
+   por
+       Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900 */
+
+
+/*=====================
+VARIÁVEIS
+====================*/
+
+:root {
+    /* Cores tiradas das "cores" de ruído do áudio */
+    --bg: #ebd5d0;                      /* rosa (pink noise): fundo da página */
+    --ink: #3a2520;                     /* marrom (brown noise): texto */
+    --muted: #5b4540;                   /* texto secundário */
+    --accent: #2e3fe0;                  /* azul (blue noise): links, foco, números */
+    --sheet: rgb(235 213 208 / 0.9);    /* folha translúcida sob o texto, por cima do p5 */
+    --on-canvas: var(--ink);            /* texto direto sobre o p5; se o sketch for escuro, use #fff */
+
+    /* Fontes: Syne nos títulos, IBM Plex Sans no texto */
+    --font-display: "Syne", system-ui, sans-serif;
+    --font-text: "IBM Plex Sans", system-ui, sans-serif;
+    --display-stretch: 100%;                       /* largura dos títulos (só muda algo na Archivo) */
+    --name-size: clamp(2rem, 14.5cqi, 7.5rem);     /* "Carioba" ocupa quase toda a largura da coluna */
+
+    /* Dupla 2: tire o comentário para testar
+    --font-display: "Fraunces", Georgia, serif;
+    --font-text: "Inter", system-ui, sans-serif;
+    --name-size: clamp(2rem, 26cqi, 7.5rem);
+    */
+
+    /* Dupla 3: tire o comentário para testar (precisa do eixo wdth no @import)
+    --font-display: "Archivo", system-ui, sans-serif;
+    --font-text: "Archivo", system-ui, sans-serif;
+    --display-stretch: 125%;
+    --name-size: clamp(2rem, 19cqi, 7.5rem);
+    */
+
+    /* Tamanhos de texto: crescem sozinhos do celular ao desktop */
+    --step-0: clamp(1.0625rem, 1rem + 0.25vw, 1.125rem);      /* 17 → 18px: texto */
+    --step-1: clamp(1.1875rem, 1.1rem + 0.4vw, 1.3125rem);    /* 19 → 21px: subtítulos */
+    --step-2: clamp(1.5rem, 1.15rem + 1.5vw, 2.25rem);        /* 24 → 36px: títulos */
+
+    /* Espaços */
+    --space-s: 1rem;
+    --space-m: 1.5rem;
+    --space-l: clamp(2rem, 1.6rem + 1.5vw, 3rem);
+    --space-xl: clamp(3rem, 2.2rem + 3vw, 5rem);
+    --gutter: clamp(1.25rem, 4vw, 3.5rem);       /* margem lateral */
+
+    --measure: 34em;    /* largura máxima de uma linha de texto (cerca de 70 caracteres) */
+}
+
+
+/*=====================
+BASE
+====================*/
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* O fundo vai no html. Se o body também tiver fundo, ele cobre o canvas do p5. */
+html {
+    background-color: var(--bg);
+    color-scheme: light;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    html {
+        scroll-behavior: smooth;
+    }
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-text);
+    font-size: var(--step-0);
+    line-height: 1.55;
+    color: var(--ink);
+}
+
+/* p5 sketch as a fixed, full-window background behind the page */
+/* Atenção: o p5 coloca o canvas dentro do <main>. Não use transform, filter,
+   opacity, z-index nem container-type no main: o canvas ficaria preso a ele
+   ou passaria por cima do cabeçalho e do rodapé. */
+canvas.p5Canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+/* Zera as margens padrão do navegador. Também com :where(), para que
+   a regra de espaçamento mais abaixo consiga devolver o espaço certo. */
+:where(h1, h2, h3, p, ul, ol) {
+    margin: 0;
+}
+
+h1,
+h2,
+h3 {
+    font-family: var(--font-display);
+    font-stretch: var(--display-stretch);
+    font-weight: 700;
+    line-height: 1.1;
+    text-wrap: balance;
+}
+
+h2 {
+    font-size: var(--step-2);
+}
+
+h3 {
+    font-size: var(--step-1);
+}
+
+p,
+ul,
+ol {
+    max-inline-size: var(--measure);
+}
+
+p {
+    text-wrap: pretty;
+}
+
+li + li {
+    margin-block-start: 0.6em;
+}
+
+strong {
+    font-weight: 600;
+}
+
+a {
+    color: inherit;
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.18em;
+}
+
+a:hover {
+    color: var(--accent);
+}
+
+:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+}
+
+::selection {
+    background-color: var(--accent);
+    color: var(--bg);
+}
+
+/* Espaço entre elementos vizinhos dentro de cada bloco de texto.
+   :where() não soma especificidade, então qualquer regra mais abaixo vence esta. */
+:where(section, .person, .site-footer) > * + * {
+    margin-block-start: 1em;
+}
+
+/* Um respiro acima da seção quando um link leva até ela */
+section[id] {
+    scroll-margin-block-start: var(--space-m);
+}
+
+
+/*=====================
+LAYOUT GERAL (GRID)
+Celular primeiro: uma coluna, na ordem do HTML.
+O desktop está no fim do arquivo.
+====================*/
+
+body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+        "header"
+        "listen"
+        "main"
+        "footer";
+}
+
+.site-header {
+    grid-area: header;
+}
+
+.listen {
+    grid-area: listen;
+}
+
+.site-main {
+    grid-area: main;
+}
+
+.site-footer {
+    grid-area: footer;
+}
+
+
+/*=====================
+CABEÇALHO
+No celular, ocupa boa parte da primeira tela e deixa o p5 aparecer.
+====================*/
+
+.site-header {
+    container-type: inline-size;    /* o título mede a largura do header (unidade cqi) */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;      /* nome e frase embaixo, o p5 em cima */
+    min-block-size: 62vh;
+    min-block-size: 62svh;          /* svh: altura da tela sem a barra do navegador */
+    padding: var(--space-l) var(--gutter);
+    color: var(--on-canvas);
+}
+
+.site-name {
+    font-size: var(--name-size);
+    font-weight: 800;
+    line-height: 0.9;
+    letter-spacing: -0.01em;
+}
+
+.tagline {
+    max-inline-size: 22em;
+    margin-block-start: var(--space-s);
+    font-size: var(--step-1);
+    line-height: 1.35;
+}
+
+
+/*=====================
+FOLHA DE TEXTO
+"Listen", main e rodapé ficam sobre a folha translúcida,
+para o texto ser legível em cima do p5.
+====================*/
+
+.listen,
+.site-main,
+.site-footer {
+    padding-inline: var(--gutter);
+    background-color: var(--sheet);
+}
+
+.listen {
+    padding-block-start: var(--space-l);
+}
+
+.listen audio {
+    display: block;
+    inline-size: 100%;
+}
+
+.site-main {
+    display: grid;
+    gap: var(--space-xl);
+    padding-block: var(--space-xl);
+}
+
+/* Texto corrido: How it all started, Background e Creating in the age of AI */
+.running-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+}
+
+.person + .person {
+    margin-block-start: var(--space-l);
+}
+
+.full-name {
+    display: block;
+    margin-block-start: 0.2em;
+    font-family: var(--font-text);
+    font-size: var(--step-0);
+    font-stretch: normal;
+    font-weight: 400;
+    color: var(--muted);
+}
+
+
+/*=====================
+LINKS, WHAT WE OFFER E WORKFLOWS
+====================*/
+
+.more-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-s) var(--space-l);
+}
+
+.more-links a {
+    font-family: var(--font-display);
+    font-stretch: var(--display-stretch);
+    font-size: var(--step-2);
+    font-weight: 700;
+    line-height: 1.15;
+}
+
+#what-we-offer h3 {
+    margin-block-start: var(--space-l);
+}
+
+#what-we-offer ul {
+    padding: 0;
+    list-style: none;
+}
+
+#workflows ol {
+    padding-inline-start: 1.6em;
+}
+
+#workflows li::marker {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--accent);
+}
+
+
+/*=====================
+RODAPÉ
+====================*/
+
+.site-footer {
+    padding-block: var(--space-l) var(--space-xl);
+}
+
+.site-footer p:first-child {
+    font-family: var(--font-display);
+    font-stretch: var(--display-stretch);
+    font-size: var(--step-2);
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.site-footer p + p {
+    font-size: var(--step-1);
+}
+
+
+/*=====================
+DESKTOP (a partir de 1024px)
+Duas colunas: o nome fica parado à esquerda, sobre o p5,
+e a folha de texto rola à direita.
+====================*/
+
+@media (min-width: 64em) {
+    body {
+        grid-template-columns: minmax(24rem, 1fr) minmax(0, 52rem);
+        grid-template-areas:
+            "header listen"
+            "header main"
+            "header footer";
+    }
+
+    .site-header {
+        position: sticky;
+        top: 0;
+        align-self: start;
+        min-block-size: auto;
+        justify-content: flex-start;
+    }
 }
