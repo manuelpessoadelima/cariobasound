@@ -167,7 +167,7 @@ a:hover {
 
 /* Espaço entre elementos vizinhos dentro de cada bloco de texto.
    :where() não soma especificidade, então qualquer regra mais abaixo vence esta. */
-:where(section, .person, .site-footer) > * + * {
+:where(section, .person, .site-footer, .modal-content) > * + * {
     margin-block-start: 1em;
 }
 
@@ -288,6 +288,67 @@ para o texto ser legível em cima do p5.
     font-stretch: normal;
     font-weight: 400;
     color: var(--muted);
+}
+
+
+/*=====================
+MODAL (BACKGROUND)
+O título "Background" é um link que abre o <dialog>.
+O navegador cuida do Esc, do foco e de colocar o modal por cima de tudo.
+====================*/
+
+.modal {
+    inline-size: min(46rem, 100% - 2 * var(--gutter));
+    max-block-size: 88vh;
+    max-block-size: 88svh;
+    padding: 0;                     /* o espaço interno fica no .modal-content, para o clique fora funcionar */
+    border: none;
+    background-color: var(--bg);
+    color: var(--ink);
+    overflow-y: auto;
+    overscroll-behavior: contain;   /* rolar o modal não rola a página atrás */
+}
+
+.modal::backdrop {
+    background-color: rgb(58 37 32 / 0.55);    /* --ink translúcido */
+}
+
+.modal-content {
+    padding: var(--space-l) var(--gutter) var(--space-xl);
+}
+
+/* O botão fica fixo no canto enquanto o texto do modal rola */
+.modal form {
+    position: sticky;
+    top: 0;
+    display: flex;
+    justify-content: flex-end;
+    block-size: 0;                  /* não empurra o título para baixo */
+}
+
+/* O form do botão vem antes do título, então tira o espaço que ele ganharia */
+.modal-content > h2 {
+    margin-block-start: 0;
+}
+
+.modal-close {
+    padding: 0 0.2em;
+    border: none;
+    background: none;
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    line-height: 1;
+    color: var(--ink);
+    cursor: pointer;
+}
+
+.modal-close:hover {
+    color: var(--accent);
+}
+
+/* Com o modal aberto, a página atrás não rola */
+html:has(dialog[open]) {
+    overflow: hidden;
 }
 
 
