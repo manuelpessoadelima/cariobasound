@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="css/stylesheet.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Portfolio · Carioba Sound</title>
+    <meta name="description" content="Selected work by Carioba Sound: original scores, sound design, generative music and sound post-production for film, games and digital media.">
+
+    <meta property="og:title" content="Portfolio · Carioba Sound">
+    <meta property="og:description" content="Selected scores and sound design for film, games and digital products.">
+    <meta property="og:type" content="website">
+</head>
+
+<body>
+    <header class="site-header">
+        <!-- Nesta página o h1 é "Portfolio", então o nome vira um link de volta para a home -->
+        <p class="site-name"><a href="index.html">Carioba Sound</a></p>
+        <p class="tagline">Selected work.</p>
+    </header>
+
+    <main class="site-main">
+
+        <section id="portfolio" class="portfolio">
+            <a href="index.html" class="button">← Carioba Sound</a>
+            <h1>Portfolio</h1>
+            <p>Installations, institutional films, records and soundtracks.</p>
+
+            <nav class="portfolio-nav" aria-label="Portfolio sections">
+                <a href="#silent-green">Live at Silent Green</a>
+                <a href="#installations">Installations</a>
+                <a href="#institutional">Corporate &amp; institutional</a>
+                <a href="#album">Album / vinyl</a>
+                <a href="#soundtracks">Soundtracks</a>
+            </nav>
+        </section>
+
+        <!-- Primeiro da lista: gravação ao vivo (áudio no Google Drive, "qualquer pessoa com o link") -->
+        <section id="silent-green" class="project-list">
+            <p class="group-label">Live recording</p>
+            <h2>Live at Silent Green</h2>
+
+            <article class="project">
+                <div class="project-media">
+                    <iframe class="drive-audio" src="https://drive.google.com/file/d/1B0laB5f5y67phJKVKyL7GpeEtoas65Bi/preview" title="Live at Silent Green (audio player)" loading="lazy" allow="autoplay"></iframe>
+                </div>
+                <p><a class="footer-link" href="https://drive.google.com/file/d/1B0laB5f5y67phJKVKyL7GpeEtoas65Bi/view" target="_blank" rel="noopener">Open in Google Drive ↗</a></p>
+            </article>
+        </section>
+
+        <!-- =========================================================
+             AUDIO-VISUAL PORTFOLIO
+             Cada trabalho é um <article class="project">: mídia e título.
+             Vídeo do Vimeo: só o <iframe> (o script player.js do Vimeo não é necessário).
+             Se o vídeo não for 16:9, ajustem a proporção com style="--ratio: 4 / 3".
+             ========================================================= -->
+
+        <section id="installations" class="project-list">
+            <p class="group-label">Audio-visual portfolio</p>
+            <h2>Installations</h2>
+
+            <div class="project-grid">
+                <article id="escopo" class="project">
+                    <div class="project-media">
+                        <iframe src="https://player.vimeo.com/video/348192336?badge=0&amp;autopause=0" title="Escopo: exhibition view" loading="lazy" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <h3 class="project-title">Escopo</h3>
+                </article>
+
+                
+
+                <article id="horizonte-negro" class="project">
+                    <div class="project-media">
+                        <iframe src="https://player.vimeo.com/video/67426279?badge=0&amp;autopause=0" title="Horizonte Negro: sample" loading="lazy" style="--ratio: 4 / 3" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <h3 class="project-title">Horizonte Negro</h3>
+                </article>
+
+                <article id="semana-sim-semana-nao" class="project">
+                    <div class="project-media">
+                        <iframe src="https://player.vimeo.com/video/1118567845?h=310ecdf3d4&amp;badge=0&amp;autopause=0" title="Semana Sim Semana Não" loading="lazy" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <h3 class="project-title">Semana Sim Semana Não</h3>
+                </article>
+            </div>
+        </section>
+
+        <section id="institutional" class="project-list">
+            <p class="group-label">Audio-visual portfolio</p>
+            <h2>Corporate &amp; institutional</h2>
+
+            <div class="project-grid">
+                <!-- Vídeos do Google Drive: compartilhados como "qualquer pessoa com o link".
+                     O embed usa o endereço /preview do arquivo (não o /view). -->
+                <article id="natura-who-we-are" class="project">
+                    <div class="project-media">
+                        <iframe src="https://drive.google.com/file/d/1I8Z2BdYkp8fkEST1pRAbakFsrF5rqbx1/preview" title="Natura &amp;Co: Who we are" loading="lazy" allow="autoplay; fullscreen" allowfullscreen></iframe>
+                    </div>
+                    <h3 class="project-title">Natura &amp;Co · Who we are</h3>
+                </article>
+
+                <article id="natura-centro-de-inovacao" class="project">
+                    <div class="project-media">
+                        <iframe src="https://drive.google.com/file/d/1stQOr5q1zaumV3BjeEXSiuRQ5B-sM4k6/preview" title="Natura: Centro de Inovação" loading="lazy" allow="autoplay; fullscreen" allowfullscreen></iframe>
+                    </div>
+                    <h3 class="project-title">Natura · Centro de Inovação</h3>
+                </article>
+            </div>
+        </section>
+
+        <section id="album" class="project-list">
+            <p class="group-label">Audio-visual portfolio</p>
+            <h2>Album / vinyl</h2>
+
+            <article id="realejo" class="project">
+                <div class="project-media">
+                    <iframe class="bandcamp" src="https://bandcamp.com/EmbeddedPlayer/album=2718304782/size=large/bgcol=000000/linkcol=46e6ff/tracklist=false/transparent=true/" title="Realejo by Manuel Pessôa de Lima (Bandcamp player)" loading="lazy" seamless><a href="https://blacktruffle.bandcamp.com/album/realejo">Realejo by Manuel Pessôa de Lima</a></iframe>
+                </div>
+                <h3 class="project-title">Realejo</h3>
+                <p class="project-description">Manuel Pessoa de Lima. Released on vinyl by Black Truffle.</p>
+            </article>
+        </section>
+
+        <!-- =========================================================
+             SOUNDTRACK PORTFOLIO
+             ========================================================= -->
+
+        <section id="soundtracks" class="project-list">
+            <p class="group-label">Soundtrack portfolio</p>
+            <h2>Soundtracks</h2>
+
+            <article id="soundcloud" class="project">
+                <div class="project-media">
+                    <iframe class="soundcloud" src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/manuelpessoa&amp;color=%2346e6ff&amp;auto_play=false&amp;hide_related=true&amp;show_comments=false&amp;show_user=true&amp;show_reposts=false&amp;visual=false" title="Manuel Pessoa de Lima on SoundCloud" loading="lazy" allow="autoplay"></iframe>
+                </div>
+                <p><a class="footer-link" href="https://soundcloud.com/manuelpessoa" target="_blank" rel="noopener">soundcloud.com/manuelpessoa ↗</a></p>
+            </article>
+        </section>
+
+    </main>
+
+    <footer id="contact" class="site-footer">
+        <p class="footer-title">Let’s talk.</p>
+
+        <div class="contacts">
+            <div class="contact">
+                <p class="contact-name">Ricardo Carioba</p>
+                <p><a class="email" data-user="ricardocarioba" data-domain="gmail.com">ricardocarioba [at] gmail.com</a></p>
+                <p><a class="footer-link" href="https://ricardocarioba.com/" target="_blank" rel="noopener">ricardocarioba.com ↗</a></p>
+            </div>
+
+            <div class="contact">
+                <p class="contact-name">Manuel Pessoa de Lima</p>
+                <p><a class="email" data-user="manu" data-domain="manupessoalima.com">manu [at] manupessoalima.com</a></p>
+            </div>
+        </div>
+
+        <p class="footer-social">
+            <a class="instagram" href="https://www.instagram.com/howweallstarted/" target="_blank" rel="noopener">
+                <img src="img/instagram.svg" alt="Instagram" width="24" height="24">
+                <span>@howweallstarted</span>
+            </a>
+            <a class="footer-link" href="index.html">Home</a>
+        </p>
+    </footer>
+
+    <script src="js/modal.js"></script>
+    <script src="js/contact.js"></script>
+
+    <!--
+        <script src="https://cdn.jsdelivr.net/npm/p5@1.11.1/lib/p5.min.js"></script>
+        <script src="js/sketch.js"></script>
+    -->
+</body>
+</html>

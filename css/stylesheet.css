@@ -1,14 +1,13 @@
 /*=====================
 GENERAL SETUP
+Carioba Sound · versão escura
+Referência estética: a obra do Ricardo Carioba. Sala preta, luz, cor e
+frequência; forma geométrica e redução. Preto de verdade no fundo,
+texto claro, e uma única cor de "luz" usada com parcimônia.
 ====================*/
 
 
-@import url('https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Syne:wght@400..800&display=swap');
-
-/* Para testar a dupla 3 (Archivo larga), troque no @import acima
-       Archivo:ital,wght@0,100..900;1,100..900
-   por
-       Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900 */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&family=Syne:wght@400..800&display=swap');
 
 
 /*=====================
@@ -16,37 +15,38 @@ VARIÁVEIS
 ====================*/
 
 :root {
-    /* Cores tiradas das "cores" de ruído do áudio */
-    --bg: #ebd5d0;                      /* rosa (pink noise): fundo da página */
-    --ink: #3a2520;                     /* marrom (brown noise): texto */
-    --muted: #5b4540;                   /* texto secundário */
-    --accent: #2e3fe0;                  /* azul (blue noise): links, foco, números */
-    --sheet: rgb(235 213 208 / 0.9);    /* folha translúcida sob o texto, por cima do p5 */
-    --on-canvas: var(--ink);            /* texto direto sobre o p5; se o sketch for escuro, use #fff */
+    /* Cores */
+    --bg: #000;                             /* a sala preta */
+    --ink: #f2f2ee;                         /* texto: branco levemente quente, menos duro que #fff */
+    --muted: rgb(242 242 238 / 0.68);       /* texto secundário */
+    --line: rgb(242 242 238 / 0.22);        /* fios finos que organizam a página */
+    --accent: #46e6ff;                      /* a cor da "luz": links, foco, números, hover */
+    --on-accent: #000;                      /* texto sobre fundo --accent */
 
-    /* Fontes: Syne nos títulos, IBM Plex Sans no texto */
+    /* Outras cores de luz para testar (troque só o --accent):
+       lima      #c6ff3a
+       magenta   #ff3df2
+       laranja   #ff5a2e
+       violeta   #9b8cff                                                    */
+
+    /* Vídeo de fundo */
+    --video-dim: 0.35;                      /* quanto escurecer o vídeo: 0 = original, 1 = preto */
+    --sheet: rgb(0 0 0 / 0.72);             /* folha translúcida sob o texto, por cima do vídeo */
+    --sheet-blur: 14px;                     /* desfoque do vídeo atrás da folha (0 desliga) */
+    --on-canvas: var(--ink);                /* texto direto sobre o vídeo / p5 */
+
+    /* Fontes: Syne nos títulos, IBM Plex Sans no texto, IBM Plex Mono nos rótulos */
     --font-display: "Syne", system-ui, sans-serif;
     --font-text: "IBM Plex Sans", system-ui, sans-serif;
-    --display-stretch: 100%;                       /* largura dos títulos (só muda algo na Archivo) */
-    --name-size: clamp(2rem, 14.5cqi, 7.5rem);     /* "Carioba" ocupa quase toda a largura da coluna */
-
-    /* Dupla 2: tire o comentário para testar
-    --font-display: "Fraunces", Georgia, serif;
-    --font-text: "Inter", system-ui, sans-serif;
-    --name-size: clamp(2rem, 26cqi, 7.5rem);
-    */
-
-    /* Dupla 3: tire o comentário para testar (precisa do eixo wdth no @import)
-    --font-display: "Archivo", system-ui, sans-serif;
-    --font-text: "Archivo", system-ui, sans-serif;
-    --display-stretch: 125%;
-    --name-size: clamp(2rem, 19cqi, 7.5rem);
-    */
+    --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    --name-size: clamp(3rem, 11cqi, 9rem);         /* "Carioba Sound" no cabeçalho */
 
     /* Tamanhos de texto: crescem sozinhos do celular ao desktop */
+    --step--1: clamp(0.75rem, 0.72rem + 0.12vw, 0.8125rem);   /* 12 → 13px: rótulos em mono */
     --step-0: clamp(1.0625rem, 1rem + 0.25vw, 1.125rem);      /* 17 → 18px: texto */
     --step-1: clamp(1.1875rem, 1.1rem + 0.4vw, 1.3125rem);    /* 19 → 21px: subtítulos */
     --step-2: clamp(1.5rem, 1.15rem + 1.5vw, 2.25rem);        /* 24 → 36px: títulos */
+    --step-3: clamp(2.25rem, 1.2rem + 4.5vw, 5rem);           /* 36 → 80px: "Vamos conversar?" */
 
     /* Espaços */
     --space-s: 1rem;
@@ -55,7 +55,8 @@ VARIÁVEIS
     --space-xl: clamp(3rem, 2.2rem + 3vw, 5rem);
     --gutter: clamp(1.25rem, 4vw, 3.5rem);       /* margem lateral */
 
-    --measure: 34em;    /* largura máxima de uma linha de texto (cerca de 70 caracteres) */
+    --measure: 36em;        /* largura máxima de uma linha de texto */
+    --page-max: 90rem;      /* largura máxima do conteúdo em telas muito grandes */
 }
 
 
@@ -69,10 +70,13 @@ BASE
     box-sizing: border-box;
 }
 
-/* O fundo vai no html. Se o body também tiver fundo, ele cobre o canvas do p5. */
+/* O PRETO VAI NO html, NÃO NO body.
+   Se o body tiver fundo, ele é pintado por cima do vídeo (que fica atrás, com z-index negativo)
+   e o vídeo some. Com o fundo no html, o vídeo aparece entre o preto e o conteúdo. */
 html {
     background-color: var(--bg);
-    color-scheme: light;
+    color-scheme: dark;                         /* barra de rolagem e <audio> escuros */
+    scrollbar-color: rgb(242 242 238 / 0.35) transparent;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
 }
@@ -84,17 +88,49 @@ html {
 }
 
 body {
-    margin: 0;
+    margin: 0;                                  /* sem background aqui: veja o comentário acima */
     font-family: var(--font-text);
     font-size: var(--step-0);
-    line-height: 1.55;
+    font-weight: 400;
+    line-height: 1.6;
     color: var(--ink);
 }
 
-/* p5 sketch as a fixed, full-window background behind the page */
-/* Atenção: o p5 coloca o canvas dentro do <main>. Não use transform, filter,
-   opacity, z-index nem container-type no main: o canvas ficaria preso a ele
-   ou passaria por cima do cabeçalho e do rodapé. */
+/* VÍDEO DE FUNDO
+   Coloque <video class="bg-video"> como PRIMEIRO filho do <body>.
+   Ele fica fixo, cobrindo a janela, atrás de todo o conteúdo. */
+.bg-video {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    pointer-events: none;
+}
+
+/* Véu escuro por cima do vídeo, para o texto continuar legível.
+   Vem depois do vídeo na ordem do HTML, então fica por cima dele. */
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-color: rgb(0 0 0 / var(--video-dim));
+}
+
+/* Quem pede menos movimento fica só com o preto */
+@media (prefers-reduced-motion: reduce) {
+    .bg-video {
+        display: none;
+    }
+}
+
+/* Se um dia o sketch do p5 voltar: ele também fica fixo atrás da página.
+   Atenção: o p5 coloca o canvas dentro do <main>. Não use transform, filter,
+   opacity, z-index nem container-type no main. (O sketch.js atual desenha
+   fundo branco: troque backgroundColor para 0 e dotColor para 255.) */
 canvas.p5Canvas {
     position: fixed;
     top: 0;
@@ -112,9 +148,9 @@ h1,
 h2,
 h3 {
     font-family: var(--font-display);
-    font-stretch: var(--display-stretch);
     font-weight: 700;
     line-height: 1.1;
+    letter-spacing: -0.01em;
     text-wrap: balance;
 }
 
@@ -141,14 +177,14 @@ li + li {
 }
 
 strong {
-    font-weight: 600;
+    font-weight: 500;
 }
 
 a {
     color: inherit;
     text-decoration-color: var(--accent);
     text-decoration-thickness: 0.08em;
-    text-underline-offset: 0.18em;
+    text-underline-offset: 0.2em;
 }
 
 a:hover {
@@ -156,18 +192,18 @@ a:hover {
 }
 
 :focus-visible {
-    outline: 3px solid var(--accent);
+    outline: 2px solid var(--accent);
     outline-offset: 3px;
 }
 
 ::selection {
     background-color: var(--accent);
-    color: var(--bg);
+    color: var(--on-accent);
 }
 
 /* Espaço entre elementos vizinhos dentro de cada bloco de texto.
    :where() não soma especificidade, então qualquer regra mais abaixo vence esta. */
-:where(section, .person, .site-footer, .modal-content) > * + * {
+:where(section, .person, .site-footer, .modal-content, .project) > * + * {
     margin-block-start: 1em;
 }
 
@@ -178,9 +214,9 @@ section[id] {
 
 
 /*=====================
-LAYOUT GERAL (GRID)
-Celular primeiro: uma coluna, na ordem do HTML.
-O desktop está no fim do arquivo.
+LAYOUT GERAL
+Uma coluna em todos os tamanhos: cabeçalho de tela cheia sobre o vídeo,
+depois a folha de texto. A organização em colunas fica dentro das seções.
 ====================*/
 
 body {
@@ -212,46 +248,116 @@ body {
 
 /*=====================
 CABEÇALHO
-No celular, ocupa boa parte da primeira tela e deixa o p5 aparecer.
+Ocupa a primeira tela inteira: o vídeo aparece limpo, só com o nome embaixo.
 ====================*/
 
 .site-header {
+    position: relative;
     container-type: inline-size;    /* o título mede a largura do header (unidade cqi) */
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;      /* nome e frase embaixo, o p5 em cima */
-    min-block-size: 62vh;
-    min-block-size: 62svh;          /* svh: altura da tela sem a barra do navegador */
+    justify-content: flex-end;
+    min-block-size: 100vh;
+    min-block-size: 100svh;         /* svh: altura da tela sem a barra do navegador */
     padding: var(--space-l) var(--gutter);
     color: var(--on-canvas);
 }
 
 .site-name {
+    inline-size: min-content;       /* quebra em cada palavra: "Carioba" em cima, "Sound" embaixo, em qualquer tela */
+    font-family: var(--font-display);   /* no portfolio é um <p>, não um <h1> */
     font-size: var(--name-size);
     font-weight: 800;
-    line-height: 0.9;
-    letter-spacing: -0.01em;
+    line-height: 0.92;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
 }
 
 .tagline {
-    max-inline-size: 22em;
-    margin-block-start: var(--space-s);
+    max-inline-size: 30em;
+    margin-block-start: var(--space-m);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.04em;
+    line-height: 1.6;
+    text-transform: uppercase;
+}
+
+/* Um quadradinho de luz antes da frase, como o LED de um equipamento */
+.tagline::before {
+    content: "";
+    display: inline-block;
+    inline-size: 0.7em;
+    block-size: 0.7em;
+    margin-inline-end: 0.9em;
+    background-color: var(--accent);
+    box-shadow: 0 0 0.9em var(--accent);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .tagline::before {
+        animation: led 2.6s ease-in-out infinite;
+    }
+}
+
+@keyframes led {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.25; }
+}
+
+/* Seta lembrando que a página continua abaixo */
+.site-header::after {
+    content: "↓";
+    content: "↓" / "";              /* texto alternativo vazio: leitores de tela ignoram */
+    position: absolute;
+    inset-inline-end: var(--gutter);
+    inset-block-end: var(--space-l);
+    font-family: var(--font-mono);
     font-size: var(--step-1);
-    line-height: 1.35;
+    line-height: 1;
+    color: var(--on-canvas);
+}
+
+/* No portfolio o cabeçalho é um <p> em vez de <h1>: fica baixo, sem tela cheia */
+.site-header:has(> p.site-name) {
+    --name-size: clamp(2.5rem, 7cqi, 5.5rem);   /* nome menor que na home */
+    min-block-size: 40vh;
+    min-block-size: 40svh;
+}
+
+.site-header:has(> p.site-name)::after {
+    content: none;
+}
+
+/* Na home a frase flutua no meio do espaço vazio acima do nome.
+   No HTML ela continua depois do <h1> (leitores de tela leem o nome primeiro);
+   "order" só muda a posição na tela, e as margens auto dividem o espaço livre
+   igualmente acima e abaixo dela. */
+.site-header:has(> h1.site-name) .tagline {
+    order: -1;
+    margin-block: auto;
+    margin-inline: auto;
+    padding-block: var(--space-l);
+    font-size: var(--step-0);
+    text-align: center;
+    text-wrap: balance;
 }
 
 
 /*=====================
 FOLHA DE TEXTO
-"Listen", main e rodapé ficam sobre a folha translúcida,
-para o texto ser legível em cima do p5.
+"Listen", main e rodapé ficam sobre uma folha escura e translúcida,
+com o vídeo desfocado atrás, para o texto ser legível.
 ====================*/
 
 .listen,
 .site-main,
 .site-footer {
-    padding-inline: var(--gutter);
+    /* margem lateral, mas sem deixar o conteúdo passar de --page-max */
+    padding-inline: max(var(--gutter), calc((100% - var(--page-max)) / 2));
     background-color: var(--sheet);
+    -webkit-backdrop-filter: blur(var(--sheet-blur));
+    backdrop-filter: blur(var(--sheet-blur));
 }
 
 .listen {
@@ -269,11 +375,118 @@ para o texto ser legível em cima do p5.
     padding-block: var(--space-xl);
 }
 
-/* Texto corrido: How it all started, Background e Creating in the age of AI */
+/* Texto corrido: How it all started, What we offer e as linhas que abrem os modais */
 .running-text {
+    counter-reset: secao;
     display: flex;
     flex-direction: column;
     gap: var(--space-xl);
+}
+
+/* Cada seção vira duas colunas no desktop: título à esquerda (fixo enquanto
+   o texto rola) e o texto à direita. No celular, tudo em uma coluna. */
+.running-text > section {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.running-text > section > h2 {
+    counter-increment: secao;
+}
+
+/* Número da seção em mono, na cor da luz: 01 /  02 / */
+.running-text > section > h2::before {
+    content: counter(secao, decimal-leading-zero) " /";
+    display: block;
+    margin-block-end: 0.9em;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+}
+
+@media (min-width: 64em) {
+    .running-text > section {
+        grid-template-columns: minmax(12rem, 1fr) minmax(0, 2fr);
+        column-gap: var(--space-l);
+    }
+
+    .running-text > section > h2 {
+        grid-column: 1;
+        grid-row: 1 / span 20;      /* o título atravessa todas as linhas de texto */
+        align-self: start;
+        position: sticky;
+        top: var(--space-l);
+        padding-inline-end: var(--space-m);
+    }
+
+    .running-text > section > :not(h2) {
+        grid-column: 2;
+    }
+
+    /* o primeiro bloco de texto começa na mesma altura do título */
+    .running-text > section > h2 + * {
+        margin-block-start: 0;
+    }
+}
+
+/* Frase em destaque no texto corrido: marcada na cor da luz, como um marca-texto.
+   box-decoration-break repete o fundo e o respiro em cada linha quebrada. */
+.highlight {
+    padding: 0.1em 0.3em;
+    font-weight: 600;
+    color: var(--on-accent);
+    background-color: var(--accent);
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+}
+
+/* What we offer: lista simples, um item por linha, separada por fios finos */
+.offer-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-block-start: 1px solid var(--line);
+}
+
+.offer-list li {
+    padding-block: 0.6em;
+    border-block-end: 1px solid var(--line);
+    font-size: var(--step-1);
+}
+
+.offer-list li + li {
+    margin-block-start: 0;      /* os fios já separam os itens */
+}
+
+/* Artist statement: texto denso, então sai das duas colunas e vira
+   uma coluna estreita e centralizada, justificada, leve e bem espaçada. */
+.running-text > section.statement {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    padding-block: var(--space-l);
+}
+
+.running-text > .statement > * {
+    grid-column: 1;
+    inline-size: 100%;
+    max-inline-size: 30em;
+}
+
+.running-text > .statement > h2 {
+    grid-row: auto;             /* desfaz o "span 20" do título fixo das outras seções */
+    justify-self: start;        /* título na margem esquerda, como nas outras seções */
+    max-inline-size: none;
+    position: static;
+    padding-inline-end: 0;
+}
+
+.statement p {
+    font-weight: 300;
+    line-height: 2;
+    text-align: justify;
+    hyphens: auto;              /* hifeniza (lang="en") para o justificado não abrir buracos */
 }
 
 .person + .person {
@@ -282,18 +495,65 @@ para o texto ser legível em cima do p5.
 
 .full-name {
     display: block;
-    margin-block-start: 0.2em;
-    font-family: var(--font-text);
-    font-size: var(--step-0);
-    font-stretch: normal;
+    margin-block-start: 0.5em;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
     font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     color: var(--muted);
 }
 
 
 /*=====================
-MODAL (BACKGROUND)
-O título "Background" é um link que abre o <dialog>.
+LINHAS QUE ABREM MODAIS (Background, Creating in the age of AI)
+Parecem um índice: fio fino em cima, título grande, "+" à direita.
+No hover a linha inteira acende na cor da luz.
+====================*/
+
+.running-text > h2 {
+    margin-block-start: calc(-1 * var(--space-xl) + var(--space-m));   /* cola nas linhas vizinhas */
+    border-block-start: 1px solid var(--line);
+}
+
+.running-text > section + h2 {
+    margin-block-start: 0;
+}
+
+.running-text > h2:last-of-type,
+.running-text > h2:has(+ dialog:last-child) {
+    border-block-end: 1px solid var(--line);
+}
+
+.running-text > h2 a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-m);
+    /* margem negativa + padding igual: a linha acende além do texto, sem o texto se mover */
+    margin-inline: calc(-1 * var(--space-s));
+    padding: var(--space-m) var(--space-s);
+    text-decoration: none;
+    transition: background-color 0.12s, color 0.12s;
+}
+
+.running-text > h2 a::after {
+    content: "+";
+    content: "+" / "";
+    font-family: var(--font-mono);
+    font-weight: 400;
+    line-height: 1;
+}
+
+.running-text > h2 a:hover {
+    background-color: var(--accent);
+    color: var(--on-accent);
+}
+
+
+/*=====================
+MODAL
+Os títulos acima são links que abrem o <dialog>.
 O navegador cuida do Esc, do foco e de colocar o modal por cima de tudo.
 ====================*/
 
@@ -302,15 +562,29 @@ O navegador cuida do Esc, do foco e de colocar o modal por cima de tudo.
     max-block-size: 88vh;
     max-block-size: 88svh;
     padding: 0;                     /* o espaço interno fica no .modal-content, para o clique fora funcionar */
-    border: none;
-    background-color: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 0;
+    background-color: #0a0a0a;
     color: var(--ink);
     overflow-y: auto;
     overscroll-behavior: contain;   /* rolar o modal não rola a página atrás */
 }
 
 .modal::backdrop {
-    background-color: rgb(58 37 32 / 0.55);    /* --ink translúcido */
+    background-color: rgb(0 0 0 / 0.7);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .modal[open] {
+        animation: modal-in 0.18s ease-out;
+    }
+
+    @keyframes modal-in {
+        from { opacity: 0; transform: translateY(0.75rem); }
+        to   { opacity: 1; transform: none; }
+    }
 }
 
 .modal-content {
@@ -335,7 +609,7 @@ O navegador cuida do Esc, do foco e de colocar o modal por cima de tudo.
     padding: 0 0.2em;
     border: none;
     background: none;
-    font-family: var(--font-display);
+    font-family: var(--font-mono);
     font-size: var(--step-2);
     line-height: 1;
     color: var(--ink);
@@ -353,40 +627,200 @@ html:has(dialog[open]) {
 
 
 /*=====================
-LINKS, WHAT WE OFFER E WORKFLOWS
+BOTÕES, WHAT WE OFFER E WORKFLOWS
 ====================*/
 
 .more-links {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-s) var(--space-l);
+    gap: var(--space-s);
 }
 
-.more-links a {
-    font-family: var(--font-display);
-    font-stretch: var(--display-stretch);
-    font-size: var(--step-2);
-    font-weight: 700;
-    line-height: 1.15;
+/* Links com cara de botão: retângulo, fio fino, texto em mono.
+   Vale para os links de ".more-links" e para "a.button" (voltar, no portfolio). */
+.more-links a,
+a.button {
+    display: inline-block;
+    align-self: flex-start;         /* não estica quando está dentro de um flex */
+    padding: 0.85em 1.4em;
+    border: 1px solid var(--ink);
+    border-radius: 0;
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    line-height: 1.2;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--ink);
+    transition: background-color 0.12s, color 0.12s, border-color 0.12s;
 }
 
+.more-links a:hover,
+a.button:hover {
+    border-color: var(--accent);
+    background-color: var(--accent);
+    color: var(--on-accent);
+}
+
+/* O botão principal (Portfolio) já vem aceso */
+.more-links a.button {
+    border-color: var(--accent);
+    background-color: var(--accent);
+    color: var(--on-accent);
+}
+
+.more-links a.button:hover {
+    border-color: var(--ink);
+    background-color: var(--ink);
+}
+
+/* Rótulo de cada grupo: Música, Som, Pós-produção */
 #what-we-offer h3 {
     margin-block-start: var(--space-l);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
 }
 
-#what-we-offer ul {
-    padding: 0;
-    list-style: none;
+/* O primeiro grupo logo depois da introdução */
+#what-we-offer h3:first-of-type {
+    margin-block-start: var(--space-m);
 }
 
 #workflows ol {
-    padding-inline-start: 1.6em;
+    padding-inline-start: 1.8em;
 }
 
 #workflows li::marker {
-    font-family: var(--font-display);
-    font-weight: 700;
+    font-family: var(--font-mono);
+    font-weight: 500;
     color: var(--accent);
+}
+
+
+/*=====================
+PORTFOLIO (portfolio.html)
+====================*/
+
+.site-name a {
+    text-decoration: none;
+}
+
+h1 {
+    font-size: var(--step-3);
+}
+
+/* As categorias usam o mesmo estilo de rótulo dos botões */
+.portfolio-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-s) var(--space-m);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.project-list > h2 {
+    padding-block-start: var(--space-s);
+    border-block-start: 1px solid var(--line);
+}
+
+/* "Audio-visual portfolio" / "Soundtrack portfolio": rótulo pequeno acima do título */
+.project-list > .group-label {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+
+.project-list > .group-label + h2 {
+    margin-block-start: 0.4em;
+}
+
+.project-list > .project,
+.project-list > .project-grid {
+    margin-block-start: var(--space-l);
+}
+
+/* Vários trabalhos lado a lado (instalações, Natura); um por linha no celular */
+.project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+    gap: var(--space-l) var(--space-m);
+}
+
+/* Enquanto o vídeo não chega, a moldura vazia guarda o lugar */
+.project-media:not(:has(iframe, img, audio)) {
+    aspect-ratio: 16 / 9;
+    border: 1px dashed var(--line);
+}
+
+/* Vídeo e imagem ocupam a largura toda, em 16:9 (ou na proporção de --ratio) */
+.project-media iframe,
+.project-media img {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+    aspect-ratio: var(--ratio, 16 / 9);
+    border: 0;
+    object-fit: cover;
+    background-color: #000;
+}
+
+/* Players de áudio têm tamanho próprio, não 16:9 */
+.project-media iframe.bandcamp {
+    inline-size: 350px;
+    max-inline-size: 100%;
+    block-size: 470px;
+    aspect-ratio: auto;
+}
+
+.project-media iframe.soundcloud {
+    block-size: 450px;
+    aspect-ratio: auto;
+    background-color: transparent;
+}
+
+/* Áudio do Google Drive: o player do Drive é uma faixa baixa, não 16:9 */
+.project-media iframe.drive-audio {
+    max-inline-size: var(--measure);
+    block-size: 7.5rem;
+    aspect-ratio: auto;
+    background-color: transparent;
+}
+
+.project-media audio {
+    display: block;
+    inline-size: 100%;
+}
+
+/* Ficha técnica: rótulo pequeno em mono em cima, valor embaixo */
+.project-credits {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    gap: var(--space-s) var(--space-m);
+    margin-inline: 0;               /* o espaço de cima vem da regra geral dos blocos de texto */
+    margin-block-end: 0;
+    max-inline-size: var(--measure);
+}
+
+.project-credits dt {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.project-credits dd {
+    margin: 0;
 }
 
 
@@ -396,41 +830,77 @@ RODAPÉ
 
 .site-footer {
     padding-block: var(--space-l) var(--space-xl);
+    border-block-start: 1px solid var(--line);
 }
 
-.site-footer p:first-child {
+.footer-title {
     font-family: var(--font-display);
-    font-stretch: var(--display-stretch);
-    font-size: var(--step-2);
-    font-weight: 700;
-    line-height: 1.1;
+    font-size: var(--step-3);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.03em;
 }
 
-.site-footer p + p {
-    font-size: var(--step-1);
+/* Uma coluna por pessoa; lado a lado quando cabe */
+.site-footer .contacts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: var(--space-l);
+    margin-block-start: var(--space-l);
 }
 
+.contact > * + * {
+    margin-block-start: 0.6em;
+}
 
-/*=====================
-DESKTOP (a partir de 1024px)
-Duas colunas: o nome fica parado à esquerda, sobre o p5,
-e a folha de texto rola à direita.
-====================*/
+.contact-name {
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
 
-@media (min-width: 64em) {
-    body {
-        grid-template-columns: minmax(24rem, 1fr) minmax(0, 52rem);
-        grid-template-areas:
-            "header listen"
-            "header main"
-            "header footer";
-    }
+.contact .email {
+    overflow-wrap: anywhere;        /* endereço longo quebra em vez de vazar no celular */
+}
 
-    .site-header {
-        position: sticky;
-        top: 0;
-        align-self: start;
-        min-block-size: auto;
-        justify-content: flex-start;
-    }
+/* Links com moldura: site do Ricardo, Instagram e Home.
+   No hover acendem na cor da luz, como os botões. */
+.footer-link,
+.instagram {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7em;
+    padding: 0.7em 1.1em;
+    border: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    transition: background-color 0.12s, color 0.12s, border-color 0.12s;
+}
+
+.footer-link:hover,
+.instagram:hover {
+    border-color: var(--accent);
+    background-color: var(--accent);
+    color: var(--on-accent);
+}
+
+.instagram img {
+    inline-size: 1.6em;
+    block-size: auto;
+}
+
+/* O ícone é claro; sobre o fundo aceso ele fica preto, junto com o texto */
+.instagram:hover img {
+    filter: brightness(0);
+}
+
+.site-footer .footer-social {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-s);
+    margin-block-start: var(--space-l);
 }
